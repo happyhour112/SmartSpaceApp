@@ -57,19 +57,21 @@ class DeviceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(14.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CircleAvatar(
-                    radius: 24,
+                    radius: 22,
                     child: Icon(_getDeviceIcon(device.type)),
                   ),
                   const SizedBox(width: 12),
@@ -79,8 +81,10 @@ class DeviceCard extends StatelessWidget {
                       children: [
                         Text(
                           device.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
-                            fontSize: 18,
+                            fontSize: 17,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -101,16 +105,17 @@ class DeviceCard extends StatelessWidget {
                       ],
                     ),
                   ),
+                  const SizedBox(width: 8),
                   DeviceStatusBadge(status: device.status),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
               if (device.temperature != null)
                 Text(
                     'Temperature: ${device.temperature!.toStringAsFixed(1)} °C'),
               if (device.humidity != null)
                 Text('Humidity: ${device.humidity!.toStringAsFixed(1)} %'),
-              const SizedBox(height: 8),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

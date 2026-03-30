@@ -67,58 +67,102 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
         devices: widget.devices,
         onAddDevice: widget.onAddDevice,
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                labelText: 'Search device',
-                hintText: 'Enter device name',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              onChanged: (value) {
-                setState(() {
-                  _searchKeyword = value;
-                });
-              },
-            ),
-          ),
-          Expanded(
-            child: filteredDevices.isEmpty
-                ? const Center(
-                    child: Text(
-                      'No device found.',
-                      style: TextStyle(fontSize: 16),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final bool isWide = constraints.maxWidth >= 800;
+
+          return Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 1200),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        labelText: 'Search device',
+                        hintText: 'Enter device name',
+                        prefixIcon: const Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          _searchKeyword = value;
+                        });
+                      },
                     ),
-                  )
-                : ListView.builder(
-                    itemCount: filteredDevices.length,
-                    itemBuilder: (context, index) {
-                      final device = filteredDevices[index];
-                      return DeviceCard(
-                        device: device,
-                        roomName: _getRoomName(device.roomId),
-                        onTap: () async {
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  DeviceDetailScreen(device: device),
-                            ),
-                          );
-                          setState(() {});
-                        },
-                        onToggle: (value) => _toggleDevice(device, value),
-                      );
-                    },
                   ),
-          ),
-        ],
+                  Expanded(
+                    child: filteredDevices.isEmpty
+                        ? const Center(
+                            child: Text(
+                              'No device found.',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          )
+                        : isWide
+                            ? GridView.builder(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8),
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 8,
+                                  mainAxisSpacing: 8,
+                                  childAspectRatio: 2.0,
+                                ),
+                                itemCount: filteredDevices.length,
+                                itemBuilder: (context, index) {
+                                  final device = filteredDevices[index];
+                                  return DeviceCard(
+                                    device: device,
+                                    roomName: _getRoomName(device.roomId),
+                                    onTap: () async {
+                                      await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => DeviceDetailScreen(
+                                              device: device),
+                                        ),
+                                      );
+                                      setState(() {});
+                                    },
+                                    onToggle: (value) =>
+                                        _toggleDevice(device, value),
+                                  );
+                                },
+                              )
+                            : ListView.builder(
+                                itemCount: filteredDevices.length,
+                                itemBuilder: (context, index) {
+                                  final device = filteredDevices[index];
+                                  return DeviceCard(
+                                    device: device,
+                                    roomName: _getRoomName(device.roomId),
+                                    onTap: () async {
+                                      await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => DeviceDetailScreen(
+                                              device: device),
+                                        ),
+                                      );
+                                      setState(() {});
+                                    },
+                                    onToggle: (value) =>
+                                        _toggleDevice(device, value),
+                                  );
+                                },
+                              ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -137,7 +181,6 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
         },
         child: const Icon(Icons.add),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

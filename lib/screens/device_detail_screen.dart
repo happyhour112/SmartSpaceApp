@@ -52,6 +52,91 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
   Widget build(BuildContext context) {
     final device = widget.device;
 
+    Widget infoCard = Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              device.name,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 12),
+            DeviceStatusBadge(status: device.status),
+            const SizedBox(height: 16),
+            Text('Type: ${_getDeviceTypeText(device.type)}'),
+            const SizedBox(height: 8),
+            Text('Room: ${_getRoomName(device.roomId)}'),
+            const SizedBox(height: 8),
+            Text('Connection: ${device.isOnline ? 'Online' : 'Offline'}'),
+            const SizedBox(height: 8),
+            Text('Power: ${device.isOn ? 'ON' : 'OFF'}'),
+            const SizedBox(height: 8),
+            Text('Last Updated: ${device.lastUpdated.toString()}'),
+          ],
+        ),
+      ),
+    );
+
+    Widget telemetryCard = Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Telemetry',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            if (device.temperature != null)
+              Text(
+                'Temperature: ${device.temperature!.toStringAsFixed(1)} °C',
+                style: const TextStyle(fontSize: 16),
+              ),
+            if (device.humidity != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  'Humidity: ${device.humidity!.toStringAsFixed(1)} %',
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ),
+            if (device.temperature == null && device.humidity == null)
+              const Text(
+                'This device does not provide sensor telemetry.',
+                style: TextStyle(fontSize: 16),
+              ),
+            const SizedBox(height: 20),
+            if (_canToggle(device.type))
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: device.isOnline
+                      ? () {
+                          setState(() {
+                            device.isOn = !device.isOn;
+                          });
+                        }
+                      : null,
+                  icon: Icon(
+                      device.isOn ? Icons.power_settings_new : Icons.power_off),
+                  label:
+                      Text(device.isOn ? 'Turn OFF Device' : 'Turn ON Device'),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Device Detail'),
@@ -70,83 +155,38 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Card(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final bool isWide = constraints.maxWidth >= 800;
+
+          return SingleChildScrollView(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1100),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        device.name,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                  child: isWide
+                      ? Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(child: infoCard),
+                            const SizedBox(width: 16),
+                            Expanded(child: telemetryCard),
+                          ],
+                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            infoCard,
+                            const SizedBox(height: 16),
+                            telemetryCard,
+                          ],
                         ),
-                      ),
-                      const SizedBox(height: 12),
-                      DeviceStatusBadge(status: device.status),
-                      const SizedBox(height: 16),
-                      Text('Type: ${_getDeviceTypeText(device.type)}'),
-                      const SizedBox(height: 8),
-                      Text('Room: ${_getRoomName(device.roomId)}'),
-                      const SizedBox(height: 8),
-                      Text(
-                          'Connection: ${device.isOnline ? 'Online' : 'Offline'}'),
-                      const SizedBox(height: 8),
-                      Text('Power: ${device.isOn ? 'ON' : 'OFF'}'),
-                      const SizedBox(height: 8),
-                      Text('Last Updated: ${device.lastUpdated.toString()}'),
-                      const SizedBox(height: 16),
-                      if (device.temperature != null)
-                        Text(
-                          'Temperature: ${device.temperature!.toStringAsFixed(1)} °C',
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      if (device.humidity != null)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8),
-                          child: Text(
-                            'Humidity: ${device.humidity!.toStringAsFixed(1)} %',
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        ),
-                      if (device.temperature == null && device.humidity == null)
-                        const Text(
-                          'This device does not provide sensor telemetry.',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                    ],
-                  ),
                 ),
               ),
-              const SizedBox(height: 20),
-              if (_canToggle(device.type))
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: device.isOnline
-                        ? () {
-                            setState(() {
-                              device.isOn = !device.isOn;
-                            });
-                          }
-                        : null,
-                    icon: Icon(device.isOn
-                        ? Icons.power_settings_new
-                        : Icons.power_off),
-                    label: Text(
-                        device.isOn ? 'Turn OFF Device' : 'Turn ON Device'),
-                  ),
-                ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
