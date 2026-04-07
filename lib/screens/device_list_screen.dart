@@ -1,35 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../data/dummy_rooms.dart';
-import '../models/iot_device_model.dart';
+import '../state/device_provider.dart';
+//import '../models/iot_device_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/device_card.dart';
 import 'add_device_screen.dart';
 import 'device_detail_screen.dart';
 
-class DeviceListScreen extends StatefulWidget {
-  final List<IoTDeviceModel> devices;
-  final Function(IoTDeviceModel) onAddDevice;
+// class DeviceListScreen extends StatefulWidget {
+//   final List<IoTDeviceModel> devices;
+//   final Function(IoTDeviceModel) onAddDevice;
 
-  const DeviceListScreen({
-    super.key,
-    required this.devices,
-    required this.onAddDevice,
-  });
+//   const DeviceListScreen({
+//     super.key,
+//     required this.devices,
+//     required this.onAddDevice,
+//   });
 
-  @override
-  State<DeviceListScreen> createState() => _DeviceListScreenState();
-}
+//   @override
+//   State<DeviceListScreen> createState() => _DeviceListScreenState();
+// }
 
-class _DeviceListScreenState extends State<DeviceListScreen> {
-  final TextEditingController _searchController = TextEditingController();
-  String _searchKeyword = '';
+// class _DeviceListScreenState extends State<DeviceListScreen> {
+//   final TextEditingController _searchController = TextEditingController();
+//   String _searchKeyword = '';
 
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
+//   @override
+//   void dispose() {
+//     _searchController.dispose();
+//     super.dispose();
+//   }
+
+class DeviceListScreen extends StatelessWidget {
+  const DeviceListScreen({super.key});
 
   String _getRoomName(String roomId) {
     try {
@@ -39,34 +44,37 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
     }
   }
 
-  List<IoTDeviceModel> _getFilteredDevices() {
-    if (_searchKeyword.trim().isEmpty) {
-      return widget.devices;
-    }
+  // List<IoTDeviceModel> _getFilteredDevices() {
+  //   if (_searchKeyword.trim().isEmpty) {
+  //     return widget.devices;
+  //   }
 
-    return widget.devices.where((device) {
-      return device.name.toLowerCase().contains(_searchKeyword.toLowerCase());
-    }).toList();
-  }
+  //   return widget.devices.where((device) {
+  //     return device.name.toLowerCase().contains(_searchKeyword.toLowerCase());
+  //   }).toList();
+  // }
 
-  void _toggleDevice(IoTDeviceModel device, bool newValue) {
-    setState(() {
-      device.isOn = newValue;
-    });
-  }
+  // void _toggleDevice(IoTDeviceModel device, bool newValue) {
+  //   setState(() {
+  //     device.isOn = newValue;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
-    final filteredDevices = _getFilteredDevices();
+    // final filteredDevices = _getFilteredDevices();
+    final deviceProvider = Provider.of<DeviceProvider>(context);
+    final filteredDevices = deviceProvider.filteredDevices;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Device List'),
       ),
-      drawer: AppDrawer(
-        devices: widget.devices,
-        onAddDevice: widget.onAddDevice,
-      ),
+      // drawer: AppDrawer(
+      //   devices: widget.devices,
+      //   onAddDevice: widget.onAddDevice,
+      // ),
+      drawer: const AppDrawer(),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final bool isWide = constraints.maxWidth >= 800;
@@ -79,7 +87,7 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: TextField(
-                      controller: _searchController,
+                      //controller: _searchController,
                       decoration: InputDecoration(
                         labelText: 'Search device',
                         hintText: 'Enter device name',
@@ -89,9 +97,11 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
                         ),
                       ),
                       onChanged: (value) {
-                        setState(() {
-                          _searchKeyword = value;
-                        });
+                        setState(
+                          () {
+                            _searchKeyword = value;
+                          },
+                        );
                       },
                     ),
                   ),

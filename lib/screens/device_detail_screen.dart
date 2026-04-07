@@ -1,12 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../data/dummy_rooms.dart';
 import '../models/enums.dart';
 import '../models/iot_device_model.dart';
+import '../state/device_provider.dart';
 import '../screens/edit_device_screen.dart';
 import '../widgets/device_status_badge.dart';
 
-class DeviceDetailScreen extends StatefulWidget {
+// class DeviceDetailScreen extends StatefulWidget {
+//   final IoTDeviceModel device;
+
+//   const DeviceDetailScreen({
+//     super.key,
+//     required this.device,
+//   });
+
+//   @override
+//   State<DeviceDetailScreen> createState() => _DeviceDetailScreenState();
+// }
+
+// class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
+
+class DeviceDetailScreen extends StatelessWidget {
   final IoTDeviceModel device;
 
   const DeviceDetailScreen({
@@ -14,11 +30,6 @@ class DeviceDetailScreen extends StatefulWidget {
     required this.device,
   });
 
-  @override
-  State<DeviceDetailScreen> createState() => _DeviceDetailScreenState();
-}
-
-class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
   String _getRoomName(String roomId) {
     try {
       return dummyRooms.firstWhere((room) => room.id == roomId).name;
@@ -50,7 +61,8 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final device = widget.device;
+    //final device = widget.device;
+    final deviceProvider = Provider.of<DeviceProvider>(context);
 
     Widget infoCard = Card(
       child: Padding(
@@ -121,9 +133,10 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
                 child: ElevatedButton.icon(
                   onPressed: device.isOnline
                       ? () {
-                          setState(() {
-                            device.isOn = !device.isOn;
-                          });
+                          // setState(() {
+                          //   device.isOn = !device.isOn;
+                          // });
+                          deviceProvider.toggleDevice(device, !device.isOn);
                         }
                       : null,
                   icon: Icon(
@@ -149,7 +162,6 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
                   builder: (_) => EditDeviceScreen(device: device),
                 ),
               );
-              setState(() {});
             },
             icon: const Icon(Icons.edit),
           ),

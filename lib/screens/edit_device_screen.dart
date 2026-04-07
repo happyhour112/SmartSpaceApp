@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../models/iot_device_model.dart';
+import '../state/device_provider.dart';
 import '../widgets/custom_text_field.dart';
 
 class EditDeviceScreen extends StatefulWidget {
@@ -36,9 +38,14 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
       return;
     }
 
-    setState(() {
-      widget.device.name = _nameController.text.trim();
-    });
+    // setState(() {
+    //   widget.device.name = _nameController.text.trim();
+    // });
+
+    Provider.of<DeviceProvider>(context, listen: false).updateDeviceName(
+      device,
+      newName,
+    );
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Device name updated successfully.')),

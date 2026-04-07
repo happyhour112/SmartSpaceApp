@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../data/dummy_rooms.dart';
 import '../models/enums.dart';
 import '../models/iot_device_model.dart';
+import '../state/device_provider.dart';
 import '../widgets/custom_text_field.dart';
 
 class AddDeviceScreen extends StatefulWidget {
-  final Function(IoTDeviceModel) onAddDevice;
+  // final Function(IoTDeviceModel) onAddDevice;
 
-  const AddDeviceScreen({
-    super.key,
-    required this.onAddDevice,
-  });
+  // const AddDeviceScreen({
+  //   super.key,
+  //   required this.onAddDevice,
+  // });
+
+  const AddDeviceScreen({super.key});
 
   @override
   State<AddDeviceScreen> createState() => _AddDeviceScreenState();
@@ -67,7 +71,8 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
       humidity: _selectedType == DeviceType.humiditySensor ? 60.0 : null,
       lastUpdated: DateTime.now(),
     );
-    widget.onAddDevice(newDevice);
+    //widget.onAddDevice(newDevice);
+    Provider.of<DeviceProvider>(context, listen: false).addDevice(newDevice);
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('New device added successfully.')),
