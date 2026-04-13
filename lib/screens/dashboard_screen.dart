@@ -1,47 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../data/dummy_rooms.dart';
-import '../models/iot_device_model.dart';
+import '../state/device_provider.dart';
+//import '../models/iot_device_model.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/dashboard_summary_card.dart';
 import 'device_list_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
-  final List<IoTDeviceModel> devices;
-  final Function(IoTDeviceModel) onAddDevice;
+  // final List<IoTDeviceModel> devices;
+  // final Function(IoTDeviceModel) onAddDevice;
 
-  const DashboardScreen({
-    super.key,
-    required this.devices,
-    required this.onAddDevice,
-  });
+  // const DashboardScreen({
+  //   super.key,
+  //   required this.devices,
+  //   required this.onAddDevice,
+  // });
+  const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final int totalDevices = devices.length;
-    final int onlineDevices = devices.where((device) => device.isOnline).length;
-    final int activeDevices = devices.where((device) => device.isOn).length;
-    final int totalRooms = dummyRooms.length;
+    // final int totalDevices = devices.length;
+    // final int onlineDevices = devices.where((device) => device.isOnline).length;
+    // final int activeDevices = devices.where((device) => device.isOn).length;
+    // final int totalRooms = dummyRooms.length;
+    final deviceProvider = Provider.of<DeviceProvider>(context);
 
     final summaryCards = [
       DashboardSummaryCard(
         title: 'Total Devices',
-        value: totalDevices.toString(),
+        value: deviceProvider.totalDevices.toString(),
+        //value: totalDevices.toString(),
         icon: Icons.devices,
       ),
       DashboardSummaryCard(
         title: 'Online Devices',
-        value: onlineDevices.toString(),
+        value: deviceProvider.onlineDevices.toString(),
+        //value: onlineDevices.toString(),
         icon: Icons.wifi,
       ),
       DashboardSummaryCard(
         title: 'Active Devices',
-        value: activeDevices.toString(),
+        value: deviceProvider.activeDevices.toString(),
+        //value: activeDevices.toString(),
         icon: Icons.power,
       ),
       DashboardSummaryCard(
         title: 'Registered Rooms',
-        value: totalRooms.toString(),
+        value: dummyRooms.length.toString(),
         icon: Icons.meeting_room,
       ),
     ];
@@ -50,10 +57,11 @@ class DashboardScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('SmartSpace IoT Dashboard'),
       ),
-      drawer: AppDrawer(
-        devices: devices,
-        onAddDevice: onAddDevice,
-      ),
+      // drawer: AppDrawer(
+      //   devices: devices,
+      //   onAddDevice: onAddDevice,
+      // ),
+      drawer: AppDrawer(),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final bool isWide = constraints.maxWidth >= 700;
@@ -104,10 +112,11 @@ class DashboardScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => DeviceListScreen(
-                                  devices: devices,
-                                  onAddDevice: onAddDevice,
-                                ),
+                                // builder: (_) => DeviceListScreen(
+                                //   devices: devices,
+                                //   onAddDevice: onAddDevice,
+                                // ),
+                                builder: (_) => DeviceListScreen(),
                               ),
                             );
                           },

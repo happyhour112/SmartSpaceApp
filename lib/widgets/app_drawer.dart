@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smart_space_app/models/iot_device_model.dart';
+//import 'package:smart_space_app/models/iot_device_model.dart';
 
 import '../screens/about_screen.dart';
 import '../screens/add_device_screen.dart';
@@ -7,14 +7,16 @@ import '../screens/dashboard_screen.dart';
 import '../screens/device_list_screen.dart';
 
 class AppDrawer extends StatelessWidget {
-  final List<IoTDeviceModel> devices;
-  final Function(IoTDeviceModel) onAddDevice;
+  // final List<IoTDeviceModel> devices;
+  // final Function(IoTDeviceModel) onAddDevice;
 
-  const AppDrawer({
-    super.key,
-    required this.devices,
-    required this.onAddDevice,
-  });
+  // const AppDrawer({
+  //   super.key,
+  //   required this.devices,
+  //   required this.onAddDevice,
+  // });
+
+  const AppDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +38,11 @@ class AppDrawer extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => DashboardScreen(
-                    devices: devices,
-                    onAddDevice: onAddDevice,
-                  ),
+                  // builder: (_) => DashboardScreen(
+                  //   devices: devices,
+                  //   onAddDevice: onAddDevice,
+                  // ),
+                  builder: (_) => const DashboardScreen(),
                 ),
               );
             },
@@ -51,10 +54,11 @@ class AppDrawer extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => DeviceListScreen(
-                    devices: devices,
-                    onAddDevice: onAddDevice,
-                  ),
+                  // builder: (_) => DeviceListScreen(
+                  //   devices: devices,
+                  //   onAddDevice: onAddDevice,
+                  // ),
+                  builder: (_) => const DeviceListScreen(),
                 ),
               );
             },
@@ -66,9 +70,10 @@ class AppDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => AddDeviceScreen(
-                    onAddDevice: onAddDevice,
-                  ),
+                  // builder: (_) => AddDeviceScreen(
+                  //   onAddDevice: onAddDevice,
+                  // ),
+                  builder: (_) => AddDeviceScreen(),
                 ),
               );
             },

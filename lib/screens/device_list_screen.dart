@@ -97,11 +97,10 @@ class DeviceListScreen extends StatelessWidget {
                         ),
                       ),
                       onChanged: (value) {
-                        setState(
-                          () {
-                            _searchKeyword = value;
-                          },
-                        );
+                        // setState(() {
+                        //   _searchKeyword = value;
+                        // });
+                        deviceProvider.setSearchKeyword(value);
                       },
                     ),
                   ),
@@ -138,10 +137,11 @@ class DeviceListScreen extends StatelessWidget {
                                               device: device),
                                         ),
                                       );
-                                      setState(() {});
                                     },
                                     onToggle: (value) =>
-                                        _toggleDevice(device, value),
+                                        //_toggleDevice(device, value),
+                                        deviceProvider.toggleDevice(
+                                            device, value),
                                   );
                                 },
                               )
@@ -160,10 +160,11 @@ class DeviceListScreen extends StatelessWidget {
                                               device: device),
                                         ),
                                       );
-                                      setState(() {});
                                     },
                                     onToggle: (value) =>
-                                        _toggleDevice(device, value),
+                                        //_toggleDevice(device, value),
+                                        deviceProvider.toggleDevice(
+                                            device, value),
                                   );
                                 },
                               ),
@@ -179,15 +180,15 @@ class DeviceListScreen extends StatelessWidget {
           await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => AddDeviceScreen(
-                onAddDevice: (newDevice) {
-                  widget.onAddDevice(newDevice);
-                  setState(() {});
-                },
-              ),
+              // builder: (_) => AddDeviceScreen(
+              //   onAddDevice: (newDevice) {
+              //     widget.onAddDevice(newDevice);
+              //     setState(() {});
+              //   },
+              // ),
+              builder: (_) => AddDeviceScreen(),
             ),
           );
-          setState(() {});
         },
         child: const Icon(Icons.add),
       ),

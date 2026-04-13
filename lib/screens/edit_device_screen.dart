@@ -43,8 +43,8 @@ class _EditDeviceScreenState extends State<EditDeviceScreen> {
     // });
 
     Provider.of<DeviceProvider>(context, listen: false).updateDeviceName(
-      device,
-      newName,
+      widget.device,
+      _nameController.text.trim(),
     );
 
     ScaffoldMessenger.of(context).showSnackBar(
