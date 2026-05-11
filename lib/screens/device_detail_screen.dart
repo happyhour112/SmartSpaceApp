@@ -8,20 +8,6 @@ import '../state/device_provider.dart';
 import '../screens/edit_device_screen.dart';
 import '../widgets/device_status_badge.dart';
 
-// class DeviceDetailScreen extends StatefulWidget {
-//   final IoTDeviceModel device;
-
-//   const DeviceDetailScreen({
-//     super.key,
-//     required this.device,
-//   });
-
-//   @override
-//   State<DeviceDetailScreen> createState() => _DeviceDetailScreenState();
-// }
-
-// class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
-
 class DeviceDetailScreen extends StatelessWidget {
   final IoTDeviceModel device;
 
@@ -59,9 +45,57 @@ class DeviceDetailScreen extends StatelessWidget {
         type == DeviceType.smartPlug;
   }
 
+  Future<void> _confirmDeleteDevice(
+    BuildContext context,
+    IoTDeviceModel device,
+  ) async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete Device'),
+          content: Text(
+            'Are you sure you want to delete "${device.name}"? This action cannot be undone.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldDelete != true) return;
+
+    await context.read<DeviceProvider>().deleteDevice(device);
+
+    if (!context.mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Device deleted successfully.'),
+      ),
+    );
+
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
-    //final device = widget.device;
     final deviceProvider = Provider.of<DeviceProvider>(context);
 
     Widget infoCard = Card(
@@ -133,9 +167,6 @@ class DeviceDetailScreen extends StatelessWidget {
                 child: ElevatedButton.icon(
                   onPressed: device.isOnline
                       ? () {
-                          // setState(() {
-                          //   device.isOn = !device.isOn;
-                          // });
                           deviceProvider.toggleDevice(device, !device.isOn);
                         }
                       : null,
@@ -164,6 +195,13 @@ class DeviceDetailScreen extends StatelessWidget {
               );
             },
             icon: const Icon(Icons.edit),
+          ),
+          IconButton(
+            tooltip: 'Delete Device',
+            onPressed: () {
+              _confirmDeleteDevice(context, device);
+            },
+            icon: const Icon(Icons.delete),
           ),
         ],
       ),

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "518566059595",
+    "project_id": "smart-space-app-a9bb3",
+    "storage_bucket": "smart-space-app-a9bb3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:518566059595:android:a64ec9fd9fc5ef6f6377ce",
+        "android_client_info": {
+          "package_name": "com.example.smart_space_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcQ5lbV8Z4K2eetVL7yWcQr-pwpNXsCcg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

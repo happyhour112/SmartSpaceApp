@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'enums.dart';
 
 class IoTDeviceModel {
@@ -24,4 +25,40 @@ class IoTDeviceModel {
     this.humidity,
     required this.lastUpdated,
   });
+
+  bool get isSensor =>
+      type == DeviceType.temperatureSensor || type == DeviceType.humiditySensor;
+
+  Map<String, dynamic> toFirestore() => {
+        'id': id,
+        'name': name,
+        'type': type.firestoreValue,
+        'roomId': roomId,
+        'isOn': isOn,
+        'isOnline': isOnline,
+        'status': status.firestoreValue,
+        'temperature': temperature,
+        'humidity': humidity,
+        'lastUpdated': Timestamp.fromDate(lastUpdated),
+        'updatedAt': FieldValue.serverTimestamp()
+      };
+
+  factory IoTDeviceModel.fromFirestore(
+      DocumentSnapshot<Map<String, dynamic>> doc) {
+    final data = doc.data() ?? {};
+    return IoTDeviceModel(
+      id: doc.id,
+      name: data['name'] ?? 'Unnamed Device',
+      type: DeviceTypeExtension.fromFirestore(data['type'] ?? 'smartLamp'),
+      roomId: data['roomId'] ?? 'r1',
+      isOn: data['isOn'] ?? false,
+      isOnline: data['isOnline'] ?? true,
+      status: DeviceStatusExtension.fromFirestore(data['status'] ?? 'normal'),
+      temperature: (data['temperature'] as num?)?.toDouble(),
+      humidity: (data['humidity'] as num?)?.toDouble(),
+      lastUpdated: data['lastUpdated'] is Timestamp
+          ? (data['lastUpdated'] as Timestamp).toDate()
+          : DateTime.now(),
+    );
+  }
 }
