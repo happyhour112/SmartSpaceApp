@@ -94,9 +94,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
       });
-
-      // No manual navigation is needed.
-      // AuthGate detects the logged-in Firebase user and opens DashboardScreen.
     } on FirebaseAuthException catch (e) {
       showMessage('Registration Failed', e.message ?? 'Registration failed.');
     } finally {

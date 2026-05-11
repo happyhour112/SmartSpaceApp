@@ -31,6 +31,7 @@ class SmartSpaceApp extends StatelessWidget {
           useMaterial3: true,
         ),
         darkTheme: ThemeData.dark(),
+        themeMode: ThemeMode.dark,
         home: const AuthGate(),
       ),
     );

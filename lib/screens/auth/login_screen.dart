@@ -62,10 +62,6 @@ class _LoginScreenState extends State<LoginScreen> {
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
-
-      // No manual navigation is needed.
-      // AuthGate listens to FirebaseAuth authStateChanges()
-      // and will automatically show DashboardScreen after login.
     } on FirebaseAuthException catch (e) {
       showErrorMessage(e.message ?? 'Incorrect email or password.');
     } finally {
