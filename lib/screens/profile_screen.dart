@@ -64,7 +64,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
         appBar: AppBar(title: const Text('User Profile'), actions: [
           IconButton(
-              onPressed: () async => FirebaseAuth.instance.signOut(),
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
+
+                if (!context.mounted) return;
+
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              },
               icon: const Icon(Icons.logout))
         ]),
         body: StreamBuilder<UserProfileModel?>(
