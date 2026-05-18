@@ -3,6 +3,7 @@ import 'dart:math';
 import '../models/enums.dart';
 import '../models/iot_device_model.dart';
 import 'firestore_service.dart';
+import 'local_notification_service.dart';
 
 class SensorSimulatorService {
   SensorSimulatorService({required FirestoreService firestoreService})
@@ -20,10 +21,19 @@ class SensorSimulatorService {
       for (final device in sensors) {
         double? temperature = device.temperature;
         double? humidity = device.humidity;
-        if (device.type == DeviceType.temperatureSensor)
+        if (device.type == DeviceType.temperatureSensor) {
           temperature = 24 + _random.nextDouble() * 8;
-        if (device.type == DeviceType.humiditySensor)
+
+          if (temperature >= 30) {
+            await LocalNotificationService.instance.showHighTemperatureAlert(
+              deviceName: device.name,
+              temperature: temperature,
+            );
+          }
+        }
+        if (device.type == DeviceType.humiditySensor) {
           humidity = 50 + _random.nextDouble() * 25;
+        }
         await _firestoreService.saveSensorReading(
             uid: uid,
             device: device,
